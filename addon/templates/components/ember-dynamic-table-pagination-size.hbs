@@ -1,0 +1,6 @@
+<span>Rows per page:</span>
+<select class="form-control" onchange={{action "selectPageSize" value="target.value"}}>
+  {{#each pageSizeOptions as |newSize|}}
+    <option selected={{if (eq pageSize newSize) true false}}>{{newSize}}</option>
+  {{/each}}
+</select>

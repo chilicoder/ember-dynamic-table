@@ -1,0 +1,19 @@
+<button class="btn btn-default" 
+        disabled={{disabledPrevious}} 
+        onclick={{action "selectPage" previous}}>
+  Previous
+</button>
+
+{{#each model as |model index|}}
+  <button class="btn btn-default {{if (eq index pageNumber) 'active'}}" 
+          name="tabgroup" 
+          onclick={{action "selectPage" index}}>
+    {{add index 1}}
+  </button>
+{{/each}}
+
+<button class="btn btn-default" 
+        disabled={{disabledNext}} 
+        onclick={{action "selectPage" next}}>
+  Next
+</button>

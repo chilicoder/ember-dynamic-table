@@ -1,0 +1,54 @@
+<div class="form-inline">
+  {{input id="filterBox" type='text' 
+                         name="filterBox" class="form-control" 
+                         value=filterText placeholder='Filter'}}
+    {{ember-dynamic-table-option-buttons checkedItems=checkedItems 
+                                         optionButtons=optionButtons 
+                                         buttonClicked=(action this.attrs.optionButtonClicked)}}
+</div>
+
+<table class="table table-hover scroll">
+  <thead>
+    {{#ember-dynamic-table-header-tr optionButtons=optionButtons.length}}
+      {{#each availableColumns as |column|}}
+        {{#ember-dynamic-table-th sortProperties=sortProperties 
+                                  property=column.property 
+                                  onSortByChange=(action "sortBy")}}
+          {{column.title}}
+        {{/ember-dynamic-table-th}}
+      {{/each}}
+    {{/ember-dynamic-table-header-tr}}
+  </thead>
+  <tbody>
+    {{#each paginatedContent as |model|}}
+      {{#ember-dynamic-table-tr model=model 
+                                optionButtons=optionButtons.length 
+                                onCheckedChange=(action "toggleCheckedProperty")}}
+        {{#each availableColumns as |column|}}
+          {{ember-dynamic-table-td click=(action this.attrs.onRowClick model) 
+                                   text=(get model column.property) 
+                                   format=column.format}}
+        {{/each}}
+      {{/ember-dynamic-table-tr}}
+    {{/each}}
+  </tbody>
+  <tfoot style="font-weight:bold">
+    {{#ember-dynamic-table-footer-tr optionButtons=optionButtons.length}}
+      {{#each availableColumns as |column|}}
+        {{ember-dynamic-table-footer-td property=column.property 
+                                        propertiesMap=propertiesWithTotals 
+                                        filteredContent=filteredContent 
+                                        format=column.format}}
+      {{/each}}
+    {{/ember-dynamic-table-footer-tr}}
+  </tfoot>
+</table>
+
+<div class="form-inline">
+  {{ember-dynamic-table-pagination-size pageSize=pageSize 
+                                        pageSizeOptions=pageSizeOptions 
+                                        onPageSizeChange=(action "setPageSize")}}
+  {{ember-dynamic-table-pagination-index model=pages 
+                                         pageNumber=pageNumber 
+                                         onPageChange=(action "setPageNumber")}}
+</div>
