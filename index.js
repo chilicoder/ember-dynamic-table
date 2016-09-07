@@ -6,6 +6,7 @@ module.exports = {
 
   included: function(app) {
     this._super.included(app);
+    app.import('bower_components/sifter/sifter.min.js');
 
     app.import('bower_components/font-awesome/css/font-awesome.min.css');
     app.import('bower_components/font-awesome/fonts/FontAwesome.otf', {
