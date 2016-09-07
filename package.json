@@ -1,6 +1,6 @@
 {
   "name": "ember-dynamic-table",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -24,12 +24,11 @@
     "broccoli-asset-rev": "^2.4.2",
     "ember-ajax": "^2.0.1",
     "ember-bootstrap": "0.9.1",
-    "ember-cli": "2.8.0-beta.2",
+    "ember-cli": "^2.8.0-beta.3",
     "ember-cli-accounting": "1.0.1",
     "ember-cli-app-version": "^1.0.0",
     "ember-cli-dependency-checker": "^1.2.0",
     "ember-cli-filter-by-query": "1.2.0",
-    "ember-cli-font-awesome": "1.5.2",
     "ember-cli-htmlbars-inline-precompile": "^0.3.1",
     "ember-cli-inject-live-reload": "^1.4.0",
     "ember-cli-jshint": "^1.0.0",
