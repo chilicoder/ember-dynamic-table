@@ -63,13 +63,14 @@ export default Ember.Controller.extend({
       this.transitionToRoute('organisations.show', id);
       return false;
     },
-    optionButtonClicked(id) {
-      switch(id) {
+    optionButtonClicked(option, checkedItems) {
+      switch(option) {
         case 'deleteOrganisation':
           console.log('deleteOrganisation');
           break;
         case 'editOrganisation':
           console.log('editOrganisation');
+          console.log(checkedItems[0].id);
           break;
         case 'createReport':
           console.log('createReport');

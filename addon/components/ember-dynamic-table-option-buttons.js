@@ -1,6 +1,10 @@
 import Ember from 'ember';
 import layout from '../templates/components/ember-dynamic-table-option-buttons';
 
+/*
+ * action: buttonClicked
+ */
+
 export default Ember.Component.extend({
   layout,
   tagName: 'span',

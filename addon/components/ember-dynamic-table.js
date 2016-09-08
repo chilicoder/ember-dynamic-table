@@ -2,6 +2,10 @@ import Ember from 'ember';
 import layout from '../templates/components/ember-dynamic-table';
 import filterByQuery from 'ember-cli-filter-by-query/util/filter';
 
+/*
+ * action: optionButtonClicked
+ */
+
 export default Ember.Component.extend({
   layout,
   pageNumber: 0,
@@ -90,6 +94,10 @@ export default Ember.Component.extend({
     },
     setPageNumber: function(pageNumber) {
       this.set('pageNumber', pageNumber);
+    },
+    optionButtonClicked: function(option) {
+      let checkedItems = this.get('checkedItems');
+      this.attrs.optionButtonClicked(option, checkedItems);
     }
   }
 });
