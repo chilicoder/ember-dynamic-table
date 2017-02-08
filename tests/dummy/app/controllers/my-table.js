@@ -36,25 +36,25 @@ export default Ember.Controller.extend({
 
   optionButtons: [
     {
-      'color':'btn-primary', 
-      'icon':'fa-trash-o', 
-      'title':'Delete Organisation(s)', 
-      'disableOnMulti':false, 
-      'actionId':'deleteOrganisation'
-    },
-    {
       'color':'btn-success', 
       'icon':'fa-pencil', 
       'title':'Edit Organisation', 
       'disableOnMulti':true, 
-      'actionId':'editOrganisation'
+      'actionId':'edit'
     },
     {
       'color':'btn-info', 
       'icon':'fa-gears', 
       'title':'Create Report', 
       'disableOnMulti':true, 
-      'actionId':'createReport'
+      'actionId':'create'
+    },
+    {
+      'color':'btn-primary', 
+      'icon':'fa-trash-o', 
+      'title':'Delete Organisation(s)', 
+      'disableOnMulti':false, 
+      'actionId':'delete'
     }
   ],
 
@@ -64,19 +64,15 @@ export default Ember.Controller.extend({
       return false;
     },
     optionButtonClicked(option, checkedItems) {
+      console.log(checkedItems);
       switch(option) {
-        case 'deleteOrganisation':
-          console.log('deleteOrganisation');
+        case 'create':
           break;
-        case 'editOrganisation':
-          console.log('editOrganisation');
-          console.log(checkedItems[0].id);
+        case 'edit':
           break;
-        case 'createReport':
-          console.log('createReport');
+        case 'delete':
           break;
         default:
-          console.log('default');
           break;
       }
     }

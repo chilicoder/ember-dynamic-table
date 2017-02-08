@@ -24,7 +24,7 @@ test('When the propertiesMap value is set as true, the total of all the values i
   assert.expect(3);
 
   this.set('property', 'units');
-  this.set('propertiesMap', new Map([["units", true]]));
+  this.set('propertiesMap', new Ember.Map([["units", true]]));
   this.set('filteredContent', FILTERED_CONTENT);
   this.set('format', {'type':'number', 'options':[0]});
   this.render(hbs`{{ember-dynamic-table-footer-td property=property propertiesMap=propertiesMap filteredContent=filteredContent format=format}}`);
@@ -39,7 +39,7 @@ test('When the propertiesMap value is set as a caluclation array, the total of a
   assert.expect(3);
 
   this.set('property', 'units');
-  this.set('propertiesMap', new Map([["units", ["units", "divide", 2]]]));
+  this.set('propertiesMap', new Ember.Map([["units", ["units", "divide", 2]]]));
   this.set('filteredContent', FILTERED_CONTENT);
   this.set('format', {'type':'number', 'options':[0]});
   this.render(hbs`{{ember-dynamic-table-footer-td property=property propertiesMap=propertiesMap filteredContent=filteredContent format=format}}`);

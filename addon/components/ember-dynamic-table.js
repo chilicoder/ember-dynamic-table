@@ -23,7 +23,7 @@ export default Ember.Component.extend({
   }),
 
   propertiesWithTotals: Ember.computed('availableColumns', function() {
-    var properties = new Map();
+    var properties = new Ember.Map();
     this.get('availableColumns').filter(function(item) {
       if(item.total) {
         properties.set(item.property, item.total);
