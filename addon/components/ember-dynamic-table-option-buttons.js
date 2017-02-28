@@ -2,20 +2,27 @@ import Ember from 'ember';
 import layout from '../templates/components/ember-dynamic-table-option-buttons';
 
 /*
- * action: buttonClicked
+ * actions: buttonClicked
+ *
+ * optionButton properties:
+ *  color
+ *  icon
+ *  title
+ *  disableOnMulti
+ *  actionId
  */
 
 export default Ember.Component.extend({
   layout,
   tagName: 'span',
-  classNames: ['btn-group', 'tableRowOptionButtons'],
+  classNames: ['btn-group', 'option-buttons'],
   classNameBindings: ['showButtons::hide'],
   attributeBindings: ['role'],
   role: 'toolbar',
-  checkedItems: 0,
+  checkedItems: [],
 
   showButtons: Ember.computed('checkedItems', function() {
-    return this.get('checkedItems').length > 0 ? true : false;
+    return this.get('checkedItems').length ? true : false;
   }),
 
   multipleChecked: Ember.computed('checkedItems', function() {

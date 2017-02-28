@@ -5,22 +5,23 @@ moduleForComponent('ember-dynamic-table-header-tr', 'Integration | Component | e
   integration: true
 });
 
-test('if the optionButtons array length is < 1, the checkbox th is not displayed', function(assert) {
+test('if numOptionButtons is > 0, checkbox th is rendered', function(assert) {
   assert.expect(1);
-
-  this.set('optionButtons', 0);
-  this.render(hbs`{{ember-dynamic-table-header-tr optionButtons=optionButtons}}`);
-
-  var th = this.$('tr th#checkboxTh');
-  assert.equal(th.length, 0, 'checkbox th is not rendered');
+  this.set('numOptionButtons', 1);
+  this.render(hbs`{{ember-dynamic-table-header-tr numOptionButtons=numOptionButtons}}`);
+  assert.equal(this.$('.checkbox-th').length, 1);
 });
 
-test('if the optionButtons array length is > 0, the checkbox th is displayed', function(assert) {
+test('if numOptionButtons is < 1, checkbox th is not rendered', function(assert) {
   assert.expect(1);
+  this.set('numOptionButtons', 0);
+  this.render(hbs`{{ember-dynamic-table-header-tr numOptionButtons=numOptionButtons}}`);
+  assert.equal(this.$('.checkbox-th').length, 0);
+});
 
-  this.set('optionButtons', 1);
-  this.render(hbs`{{ember-dynamic-table-header-tr optionButtons=optionButtons}}`);
-
-  var th = this.$('tr th#checkboxTh');
-  assert.equal(th.length, 1, 'th exists');
+test('if numOptionButtons is null, checkbox th is not rendered', function(assert) {
+  assert.expect(1);
+  this.set('numOptionButtons', null);
+  this.render(hbs`{{ember-dynamic-table-header-tr numOptionButtons=numOptionButtons}}`);
+  assert.equal(this.$('.checkbox-th').length, 0);
 });

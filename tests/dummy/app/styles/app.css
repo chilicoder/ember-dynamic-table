@@ -1,0 +1,11 @@
+.is-hover {
+  color: red;
+}
+
+.highlighted {
+  background-color: lightGray;
+}
+
+tfoot: {
+  font-weight: bold;
+}

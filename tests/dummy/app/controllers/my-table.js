@@ -1,8 +1,9 @@
 import Ember from 'ember';
+import moment from 'moment';
 
 export default Ember.Controller.extend({
-  queryParams: ['sortProperties', 'pageNumber', 'pageSize', 'filterText'], 
-  sortProperties: ['name'],
+  sortProperty: ['name'],
+  queryParams: ['sortProperty', 'pageNumber', 'pageSize', 'filterText'], 
   pageNumber: 0,
   pageSize: 3,
   pageSizeOptions: [1,2,3,4,5,10],
@@ -12,25 +13,37 @@ export default Ember.Controller.extend({
       'title': 'Name', 
       'property': 'name', 
       'filterable': true, 
+      'sortable': true
     },
     {
       'title': 'User', 
       'property': 'user.username', 
       'filterable': true, 
+      'sortable': false
     },
     {
       'title': 'Tags', 
       'property': 'tags.length', 
       'filterable': false, 
-      'format': {'type':'number', 'options':[0]},
       'total': true
     },
     {
       'title': 'Records', 
       'property': 'records.length', 
       'filterable': true, 
-      'format': {'type':'currency', 'options':[2]},
-      'total': ['tags.length', 'divide', 2]
+      'total': {
+        'isCalc': true,
+        'calc': ['tags.length', 'divide', 2],
+        'format': { 
+          'type': 'number', 
+          'options': {
+            'precision': 0,
+            'thousand': '.',
+            'decimal': '.',
+            'symbol': '£'
+          } 
+        }
+      }
     }
   ],
 
@@ -64,7 +77,7 @@ export default Ember.Controller.extend({
       return false;
     },
     optionButtonClicked(option, checkedItems) {
-      console.log(checkedItems);
+      console.log(checkedItems[0]);
       switch(option) {
         case 'create':
           break;

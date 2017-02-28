@@ -7,21 +7,20 @@ export default Ember.Component.extend({
   classNameBindings: ['isChecked:highlighted'], 
   attributeBindings: ['style'],
 
-  style: Ember.computed('model.isBold', function() {
-    if (this.get('model').get('isBold')) {
-      return 'font-weight:bold';
-    }
+  style: Ember.computed('row.isBold', function() {
+    let cursor = 'cursor: pointer; ';
+    return this.get('row').get('isBold') ? cursor + 'font-weight:bold;' : cursor;
   }),
 
-  isChecked: Ember.computed('model.checked', function() {
-    return this.get('model').checked;
+  isChecked: Ember.computed('row.checked', function() {
+    return this.get('row').checked;
   }),
 
   change: function() {
-    this.attrs.onCheckedChange(this.get('model'));
+    this.attrs.onCheckedChange(this.get('row'));
   },
 
-  showCheckbox: Ember.computed('model.optionButtons', function() {
-    return this.get('optionButtons') > 0 ? true : false;
+  showCheckbox: Ember.computed('numOptionButtons', function() {
+    return this.get('numOptionButtons') > 0 ? true : false;
   })
 });

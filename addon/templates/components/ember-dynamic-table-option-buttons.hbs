@@ -2,7 +2,7 @@
   <button title="{{optionButton.title}}" 
           class="btn btn-default {{optionButton.color}}" 
           disabled={{if optionButton.disableOnMulti (if multipleChecked 'disabled')}} 
-          {{action (action this.attrs.buttonClicked optionButton.actionId)}}>
+          {{action buttonClicked optionButton.actionId}}>
     <i class="fa {{optionButton.icon}}"/>
   </button>
 {{/each}}

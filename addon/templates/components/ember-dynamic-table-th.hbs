@@ -1,2 +1,4 @@
-{{yield}}
-{{ember-dynamic-table-th-arrow sortProperties=sortProperties property=property hover=hover}}
+{{title}}
+{{#if hideArrow "hidden"}}
+  <i class='th-arrow {{arrow}} {{if isHover "is-hover"}}'></i>
+{{/if}}

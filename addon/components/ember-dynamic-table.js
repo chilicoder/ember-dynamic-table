@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import layout from '../templates/components/ember-dynamic-table';
 import filterByQuery from 'ember-cli-filter-by-query/util/filter';
+import computedFilterByQuery from 'ember-cli-filter-by-query';
 
 /*
  * action: optionButtonClicked
@@ -11,59 +12,38 @@ export default Ember.Component.extend({
   pageNumber: 0,
   pageSize: 10,
   pageSizeOptions: [10, 25, 50, 100],
+  sortProperty: null,
 
-  filterableColumns: Ember.computed('availableColumns', function() {
-    var filterableColumns = [];
-    this.get('availableColumns').filter(function(item) {
-      if (item.filterable) {
-        filterableColumns.push(item.property);
-      }
-    });
-    return filterableColumns;
-  }),
-
-  propertiesWithTotals: Ember.computed('availableColumns', function() {
-    var properties = new Ember.Map();
-    this.get('availableColumns').filter(function(item) {
-      if(item.total) {
-        properties.set(item.property, item.total);
-      }
-    });
-    return properties;
-  }),
-
-  resetPage: Ember.observer('filterText', 'pageSize', function() {
-    this.set('pageNumber', 0);
+  showPagination: Ember.computed('filteredContent', 'pageSize', function() {
+    let filteredContent = this.get('filteredContent');
+    let pageSize = this.get('pageSize');
+    return filteredContent.length > pageSize ? true : false;
   }),
 
   // Create a proxy list of the model objects, adding a 'checked' boolean to the object.
   proxiedModel: Ember.computed.map('model', function(model) {
-    return Ember.ObjectProxy.create({
-      content: model,
-      checked: false
-    });
+    return Ember.ObjectProxy.create({ content: model, checked: false });
   }),
 
-  filteredContent: Ember.computed('filterText', 'pageSize', 'pageNumber', 'proxiedModel', function() {
-    var filtered = filterByQuery(
-      this.get('proxiedModel'), 
-      this.get('filterableColumns'),
-      this.get('filterText'), 
-      {conjunction: 'and'}
-    );
-    return filtered;
+  filterableProperties: Ember.computed('availableColumns', function() {
+    let availableColumns = this.get('availableColumns');
+    let filterableColObjs = availableColumns.filter(column => { return column.filterable; });
+    return filterableColObjs.map(colObj => { return colObj.property; });
   }),
 
-  //sortedContent: Ember.computed.sort('filteredContent', 'sortProperties').property('pageSize', 'sortProperties'),
-  sortedContent: Ember.computed.sort('filteredContent', 'sortProperties'),
-  sortedContentA: Ember.computed('sortedContent', 'pageSize', 'sortProperties', function() {
-    return this.get('sortedContent');
+  filteredContent: Ember.computed('proxiedModel', 'availableColumns', 'filterText', 'pageSize', 'pageNumber', function() {
+    let proxiedModel = this.get('proxiedModel');
+    let filterText = this.get('filterText');
+    let properties = this.get('filterableProperties');
+    return filterByQuery(proxiedModel, properties, filterText, { conjunction: 'and' });
   }),
+
+  sortedContent: Ember.computed.sort('filteredContent', 'sortProperty'),
 
   // Returns an array of page arrays
-  pages: Ember.computed('sortedContentA.[]', 'pageNumber', function() {
+  pages: Ember.computed('sortedContent.[]', 'pageNumber', function() {
     var pages = [];
-    var sortedContent = this.get('sortedContentA');
+    var sortedContent = this.get('sortedContent');
     while (sortedContent.length > 0) {
       pages.push(sortedContent.splice(0, this.get('pageSize')));
     }
@@ -87,17 +67,17 @@ export default Ember.Component.extend({
       proxiedModelObject.toggleProperty('checked');
     },
     sortBy: function(sortProperty) {
-      this.set('sortProperties', sortProperty);
+      this.set('sortProperty', [sortProperty]);
     },
     setPageSize: function(pageSize) {
       this.set('pageSize', pageSize);
+      this.set('pageNumber', 0);
     },
     setPageNumber: function(pageNumber) {
       this.set('pageNumber', pageNumber);
     },
     optionButtonClicked: function(option) {
-      let checkedItems = this.get('checkedItems');
-      this.attrs.optionButtonClicked(option, checkedItems);
+      this.attrs.optionButtonClicked(option, this.get('checkedItems'));
     }
   }
 });

@@ -6,34 +6,38 @@ export default Ember.Component.extend({
   tagName: 'span',
   classNames: ['pageIndex'],
 
-  disabledPrevious: Ember.computed('pageNumber', 'model', function() {
-    if (this.get('pageNumber') === 0) {
-      return 'disabled';
-    }
+  disabledPrevious: Ember.computed('pageNumber', function() {
+    return this.get('pageNumber') === 0 ? 'disabled' : null;
   }),
 
-  disabledNext: Ember.computed('pageNumber', 'model', function() {
-    if (this.get('model.length') !== 0) {
-      if (this.get('pageNumber') + 1 >= this.get('model.length')) {
-        return 'disabled';
-      }
-    }
+  pageNumberPlusOne: Ember.computed('pageNumber', function() {
+    return this.get('pageNumber') + 1;
   }),
 
-  previous: Ember.computed('pageNumber', 'model', function() {
-    if (this.get('pageNumber') > 0) {
-      return this.get('pageNumber') - 1;
-    } else {
-      return this.get('pageNumber');
-    }
+  disabledNext: Ember.computed('pageNumber', 'numPages', function() {
+    let numPages = this.get('numPages');
+    let pageNumber = this.get('pageNumber');
+    return pageNumber + 1 >= numPages ? 'disabled' : null;
   }),
 
-  next: Ember.computed('pageNumber', 'model', function() {
-    if (this.get('pageNumber') + 1 < this.get('model.length')) {
-      return this.get('pageNumber') + 1;
-    } else {
-      return this.get('pageNumber');
+  previous: Ember.computed('pageNumber', function() {
+    let pageNumber = this.get('pageNumber');
+    return pageNumber > 0 ? pageNumber - 1 : pageNumber;
+  }),
+
+  next: Ember.computed('pageNumber', 'numPages', function() {
+    let numPages = this.get('numPages');
+    let pageNumber = this.get('pageNumber');
+    return pageNumber + 1 < numPages ? pageNumber + 1 : pageNumber;
+  }),
+
+  pages: Ember.computed('numPages', function() {
+    let numPages = this.get('numPages');
+    let pages = [];
+    for (let i = 1; i <= numPages; i++) {
+      pages.push(i);
     }
+    return pages;
   }),
   
   actions: {

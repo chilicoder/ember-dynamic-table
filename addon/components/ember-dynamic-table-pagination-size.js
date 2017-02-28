@@ -3,6 +3,7 @@ import layout from '../templates/components/ember-dynamic-table-pagination-size'
 
 /*
  *pageSize
+ *pageSizeOptions
  */
 
 export default Ember.Component.extend({

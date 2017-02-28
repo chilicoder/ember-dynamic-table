@@ -5,22 +5,23 @@ moduleForComponent('ember-dynamic-table-footer-tr', 'Integration | Component | e
   integration: true
 });
 
-test('if the optionButtons array length is < 1, the checkbox tfoot td is not displayed', function(assert) {
+test('if numOptionButtons is > 0, checkbox tfoot is rendered', function(assert) {
   assert.expect(1);
-
-  this.set('optionButtons', 0);
-  this.render(hbs`{{ember-dynamic-table-footer-tr optionButtons=optionButtons}}`);
-
-  var th = this.$('tr td#checkboxTfootTd');
-  assert.equal(th.length, 0, 'checkbox th is not rendered');
+  this.set('numOptionButtons', 1);
+  this.render(hbs`{{ember-dynamic-table-header-footer-tr numOptionButtons=numOptionButtons}}`);
+  assert.equal(this.$('.checkbox-th').length, 1);
 });
 
-test('if the optionButtons array length is > 0, the checkbox tfoot td is displayed', function(assert) {
+test('if numOptionButtons is < 1, checkbox tfoot is not rendered', function(assert) {
   assert.expect(1);
+  this.set('numOptionButtons', 0);
+  this.render(hbs`{{ember-dynamic-table-header-footer-tr numOptionButtons=numOptionButtons}}`);
+  assert.equal(this.$('.checkbox-th').length, 0);
+});
 
-  this.set('optionButtons', 1);
-  this.render(hbs`{{ember-dynamic-table-footer-tr optionButtons=optionButtons}}`);
-
-  var th = this.$('tr td#checkboxTfootTd');
-  assert.equal(th.length, 1, 'th exists');
+test('if numOptionButtons is null, checkbox tfoot is not rendered', function(assert) {
+  assert.expect(1);
+  this.set('numOptionButtons', null);
+  this.render(hbs`{{ember-dynamic-table-header-footer-tr numOptionButtons=numOptionButtons}}`);
+  assert.equal(this.$('.checkbox-th').length, 0);
 });

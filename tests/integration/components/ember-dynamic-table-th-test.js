@@ -7,50 +7,113 @@ moduleForComponent('ember-dynamic-table-th', 'Integration | Component | ember dy
 
 test('it renders', function(assert) {
   assert.expect(1);
-
-  this.set('sortProperties', ['foo']);
-  this.set('property', 'foo');
-  this.render(hbs`{{ember-dynamic-table-th sortProperties=sortProperties property=property}}`);
-
-  var $th = this.$('th');
-  assert.equal($th.length, 1, 'it exists');
+  this.render(hbs`{{ember-dynamic-table-th}}`);
+  assert.equal(this.$('th').length, 1, 'the <th> is rendered');
 });
 
-test('When the passed-in values for sortProperties and property are equal, the component adds :desc to the current sortProperties value', function(assert) {
+test('If sortProperty === property, :desc is added to the current sortProperty value', function(assert) {
   assert.expect(1);
-
-  this.set('sortProperties', ['foo']);
   this.set('property', 'foo');
-  this.on('mockSortByChange', function(sortProperties) {
-    assert.equal(sortProperties, 'foo:desc', 'Sort direction is correctly returned via the action');
+  this.set('sortProperty', ['foo']);
+  this.set('mockSortByChange', sortProperty => {
+    assert.equal(sortProperty, 'foo:desc', 'Sort direction is correctly returned via the action');
   });
-
-  this.render(hbs`{{#ember-dynamic-table-th sortProperties=sortProperties property=property onSortByChange=(action 'mockSortByChange')}}Name{{/ember-dynamic-table-th}}`);
-
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property 
+              onSortByChange=(action mockSortByChange)}}`);
   this.$('th').click();
 });
 
-test('When the passed-in values for sortProperties and property are not equal, the component updates the sortProperties value to the new property', function(assert) {
+test('If sortProperty !== property, sortProperty is updated to the new property', function(assert) {
   assert.expect(1);
-
-  this.set('sortProperties', ['foo']);
   this.set('property', 'bar');
-  this.on('mockSortByChange', function(sortProperties) {
-    assert.equal(sortProperties, 'bar', 'Sort direction is correctly returned via the action');
+  this.set('sortProperty', ['foo']);
+  this.set('mockSortByChange', sortProperty => {
+    assert.equal(sortProperty, 'bar', 'Sort direction is correctly returned via the action');
   });
-
-  this.render(hbs`{{#ember-dynamic-table-th sortProperties=sortProperties property=property onSortByChange=(action 'mockSortByChange')}}Name{{/ember-dynamic-table-th}}`);
-
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property 
+              onSortByChange=(action mockSortByChange)}}`);
   this.$('th').click();
 });
 
 test('When hovered over the element, mouse cursor style is changed to pointer', function(assert) {
-  this.render(hbs`{{ember-dynamic-table-th sortProperties='whatever'}}`);
+  this.render(hbs`{{ember-dynamic-table-th}}`);
   var $th = this.$('th');
-  assert.ok($th.css('cursor') === 'pointer', 'element contains the \'cursor: pointer\' style');
+  assert.ok($th.css('cursor') === 'pointer', "element contains the 'cursor: pointer' style");
 });
 
-test('The foo for the header is correctly displayed.', function(assert) {
-  this.render(hbs`{{#ember-dynamic-table-th sortProperties='fooBar'}}Name{{/ember-dynamic-table-th}}`);
-  assert.equal(this.$('th').text().trim(), 'Name', 'Header text \'foo\' is correctly displayed');
+test('Title is correctly displayed.', function(assert) {
+  this.render(hbs`{{ember-dynamic-table-th title="foobar"}}`);
+  assert.equal(this.$('th').text().trim(), 'foobar');
+});
+
+test('If sortProperty !== property, the <i> is not rendered', function(assert) {
+  assert.expect(1);
+  this.set('property', 'bar');
+  this.set('sortProperty', ['foo']);
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property isHover=false}}`);
+  assert.notEqual(this.$('th i').length, 1);
+});
+
+test('If sortProperty === property & isHover = false, the <i> is rendered', function(assert) {
+  assert.expect(1);
+  this.set('property', 'foo');
+  
+  this.set('sortProperty', ['foo']);
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property isHover=false}}`);
+  assert.ok(this.$('th i').length, 1);
+});
+
+test('The <i> element includes the fa class', function(assert) {
+  assert.expect(1);
+  this.set('property', 'foo');
+  
+  this.set('sortProperty', ['foo']);
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property}}`);
+  assert.ok(this.$('i').hasClass('fa'), 'element contains the "fa" class');
+});
+
+test('If isHover = true, the <i> contains the is-isHover class', function(assert) {
+  assert.expect(1);
+  this.render(hbs`{{ember-dynamic-table-th isHover=true}}`);
+  assert.ok(this.$('i').hasClass('is-hover'));
+});
+
+test('If isHover = false, the <i> contains the is-isHover class', function(assert) {
+  assert.expect(1);
+  this.set('property', 'foo');
+  
+  this.set('sortProperty', ['foo']);
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property isHover=false}}`);
+  assert.notOk(this.$('i').hasClass('is-hover'));
+});
+
+test('If sortProperty === property & sortProperty does not contain :desc, <i> has the fa-long-arrow-down class', function(assert) {
+  assert.expect(1);
+  this.set('property', 'foo');
+  
+  this.set('sortProperty', ['foo']);
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property}}`);
+  assert.ok(this.$('i').hasClass('fa-long-arrow-down'));
+});
+
+test('If sortProperty === property & sortProperty contains :desc, <i> has the fa-long-arrow-up class', function(assert) {
+  this.set('property', 'foo');
+  
+  this.set('sortProperty', ['foo:desc']);
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property}}`);
+  assert.ok(this.$('i').hasClass('fa-long-arrow-up'));
+});
+
+test('If sortProperty !== property & sortProperty contains :desc, & isHover = true, <i> has the fa-long-arrow-down class', function(assert) {
+  this.set('property', 'bar');
+  this.set('sortProperty', ['foo:desc']);
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property isHover=true}}`);
+  assert.ok(this.$('i').hasClass('fa-long-arrow-down'));
+});
+
+test('If sortProperty !== property & sortProperty does not contain :desc, & isHover = true, <i> has the fa-long-arrow-down class', function(assert) {
+  this.set('property', 'bar');
+  this.set('sortProperty', ['foo']);
+  this.render(hbs`{{ember-dynamic-table-th sortProperty=sortProperty property=property isHover=true}}`);
+  assert.ok(this.$('i').hasClass('fa-long-arrow-down'));
 });

@@ -5,12 +5,7 @@ export default Ember.Component.extend({
   layout,
   tagName: 'tr',
 
-  showCheckbox: Ember.computed('optionButtons', function() {
-    // use is present?
-    if (this.get('optionButtons') > 0) {
-      return true;
-    } else {
-      return false;
-    }
+  showCheckbox: Ember.computed('numOptionButtons', function() {
+    return this.get('numOptionButtons') > 0 ? true : false;
   })
 });

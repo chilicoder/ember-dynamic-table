@@ -1,54 +1,48 @@
 <div class="form-inline">
-  {{input id="filterBox" type='text' 
-                         name="filterBox" class="form-control" 
-                         value=filterText placeholder='Filter'}}
-    {{ember-dynamic-table-option-buttons checkedItems=checkedItems 
-                                         optionButtons=optionButtons 
-                                         buttonClicked=(action "optionButtonClicked")}}
+  {{#if filterableProperties}}
+    {{input id="filterBox" type='text' name="filterBox" class="form-control" value=filterText 
+      placeholder='Filter'}}
+  {{/if}}
+
+  {{ember-dynamic-table-option-buttons checkedItems=checkedItems optionButtons=optionButtons 
+    buttonClicked=(action "optionButtonClicked") }}
 </div>
 
 <table class="table table-hover scroll">
   <thead>
-    {{#ember-dynamic-table-header-tr optionButtons=optionButtons.length}}
+    {{#ember-dynamic-table-header-tr numOptionButtons=optionButtons.length}}
       {{#each availableColumns as |column|}}
-        {{#ember-dynamic-table-th sortProperties=sortProperties 
-                                  property=column.property 
-                                  onSortByChange=(action "sortBy")}}
-          {{column.title}}
-        {{/ember-dynamic-table-th}}
+        {{ember-dynamic-table-th sortable=column.sortable title=column.title property=column.property 
+          sortProperty=sortProperty onSortByChange=(action "sortBy") }}
       {{/each}}
     {{/ember-dynamic-table-header-tr}}
   </thead>
+
   <tbody>
-    {{#each paginatedContent as |model|}}
-      {{#ember-dynamic-table-tr model=model 
-                                optionButtons=optionButtons.length 
-                                onCheckedChange=(action "toggleCheckedProperty")}}
+    {{#each paginatedContent as |row|}}
+      {{#ember-dynamic-table-tr row=row numOptionButtons=optionButtons.length 
+        onCheckedChange=(action "toggleCheckedProperty") }}
         {{#each availableColumns as |column|}}
-          {{ember-dynamic-table-td click=(action this.attrs.onRowClick model) 
-                                   text=(get model column.property) 
-                                   format=column.format}}
+          <td>{{get row column.property}}</td>
         {{/each}}
       {{/ember-dynamic-table-tr}}
     {{/each}}
   </tbody>
-  <tfoot style="font-weight:bold">
-    {{#ember-dynamic-table-footer-tr optionButtons=optionButtons.length}}
+
+  <tfoot>
+    {{#ember-dynamic-table-footer-tr numOptionButtons=optionButtons.length}}
       {{#each availableColumns as |column|}}
-        {{ember-dynamic-table-footer-td property=column.property 
-                                        propertiesMap=propertiesWithTotals 
-                                        filteredContent=filteredContent 
-                                        format=column.format}}
+        {{ember-dynamic-table-footer-td colObject=column contentObjects=filteredContent}}
       {{/each}}
     {{/ember-dynamic-table-footer-tr}}
   </tfoot>
 </table>
 
 <div class="form-inline">
-  {{ember-dynamic-table-pagination-size pageSize=pageSize 
-                                        pageSizeOptions=pageSizeOptions 
-                                        onPageSizeChange=(action "setPageSize")}}
-  {{ember-dynamic-table-pagination-index model=pages 
-                                         pageNumber=pageNumber 
-                                         onPageChange=(action "setPageNumber")}}
+  {{ember-dynamic-table-pagination-size pageSize=pageSize pageSizeOptions=pageSizeOptions 
+    onPageSizeChange=(action "setPageSize") }}
+  {{#if showPagination}}
+    {{ember-dynamic-table-pagination-index numPages=pages.length pageNumber=pageNumber 
+     onPageChange=(action "setPageNumber") }}
+  {{/if}}
 </div>

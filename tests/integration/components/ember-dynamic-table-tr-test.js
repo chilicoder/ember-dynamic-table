@@ -6,94 +6,115 @@ moduleForComponent('ember-dynamic-table-tr', 'Integration | Component | ember dy
   integration: true
 });
 
-var MODEL = Ember.Object.create({ 
-  id:0, 
-  name:'FixOrg0'
-});
-
-test('checkbox exists', function(assert){
+test('it exists', function(assert){
   assert.expect(1);
-
-  this.set('model', MODEL);
-  this.on('mockToggleCheckedProperty', function() { });
-
-  this.render(hbs`{{ember-dynamic-table-tr model=model optionButtons=1 onCheckedChange=(action "mockToggleCheckedProperty")}}`);
-  var $checkbox = this.$('tr td[id=checkboxTd] input[type="checkbox"]');
-  assert.equal($checkbox.length, 1, 'checkbox exists');
+  const row = Ember.Object.create({ id: 0, name: 'foobar' });
+  this.set('row', row);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=1 }}`);
+  assert.equal(this.$('tr').length, 1, 'row exists');
 });
 
-test('When checkbox is ticked, the row becomes highlighted', function(assert) {
-  assert.expect(5);
+test('If numOptionButtons > 0, checkbox column is rendered', function(assert) {
+  assert.expect(1);
+  const row = Ember.Object.create({ id: 0, name: 'foobar' });
+  this.set('row', row);
+  this.set('numOptionButtons', 1);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons}}`);
+  assert.equal(this.$('.checkbox-td').length, 1);
+});
 
-  this.on('mockToggleCheckedProperty', function() {
-    Ember.run(function(){
-      Ember.set(MODEL, 'checked', true);
-    });
-  });
+test('If numOptionButtons = 0, checkbox column is not rendered', function(assert) {
+  assert.expect(1);
+  const row = Ember.Object.create({ id: 0, name: 'foobar' });
+  this.set('row', row);
+  this.set('numOptionButtons', 0);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons}}`);
+  assert.notEqual(this.$('.checkbox-td').length, 1);
+});
 
-  this.set('model', MODEL);
-  this.render(hbs`{{ember-dynamic-table-tr model=model optionButtons=1 onCheckedChange=(action "mockToggleCheckedProperty")}}`);
+test('If numOptionButtons = null, checkbox column is not rendered', function(assert) {
+  assert.expect(1);
+  const row = Ember.Object.create({ id: 0, name: 'foobar' });
+  this.set('row', row);
+  this.set('numOptionButtons', null);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons}}`);
+  assert.notEqual(this.$('.checkbox-td').length, 1);
+});
 
-  var $tr = this.$('tr');
-  assert.equal($tr.length, 1, 'row exists');
-
-  var $checkbox = this.$('tr td[id=checkboxTd] input[type="checkbox"]');
-  assert.equal($checkbox.length, 1, 'checkbox exists');
-
+test('If checkbox is clicked, it becomes checked', function(assert) {
+  assert.expect(2);
+  const row = Ember.Object.create({ id: 0, name: 'foobar' });
+  this.set('row', row);
+  this.set('numOptionButtons', 1);
+  this.set('mockAction', () => {});
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons 
+              onCheckedChange=(action mockAction)}}`);
+  const $checkbox = this.$('.checkbox-td input[type="checkbox"]');
   assert.notOk($checkbox.is(':checked'), 'checkbox is not already checked');
   $checkbox.click();
   assert.ok($checkbox.is(':checked'), 'checkbox is checked');
-
-  assert.ok($tr.eq(0).hasClass('highlighted'), 'tr contains the "highlighted" class');
 });
 
-test('if the optionButtons array length is < 1, the checkbox td is not displayed', function(assert) {
-  assert.expect(1);
-
-  this.set('model', MODEL);
-  this.set('optionButtons', 0);
-  this.render(hbs`{{ember-dynamic-table-tr model=model optionButtons=optionButtons}}`);
-
-  var checkboxTd = this.$('tr td[id=checkboxTd]');
-  assert.equal(checkboxTd.length, 0, 'checkbox td is not rendered');
-});
-
-test('if the optionButtons array length is > 0, the checkbox td is displayed', function(assert) {
-  assert.expect(1);
-
-  this.set('model', MODEL);
-  this.set('optionButtons', 1);
-  this.render(hbs`{{ember-dynamic-table-tr model=model optionButtons=optionButtons}}`);
-
-  var checkboxTd = this.$('tr td[id=checkboxTd]');
-  assert.equal(checkboxTd.length, 1, 'td exists');
-});
-
-test('if the model does not contain an isBold property, the row is not displayed in bold', function(assert) {
-  assert.expect(1);
-
-  var model = Ember.Object.create({ 
-    id:0, 
-    name:'FixOrg0',
+test("If checkbox is ticked, the 'highlighted' class is added to the row", function(assert) {
+  assert.expect(2);
+  const row = Ember.Object.create({ id: 0, name: 'foobar' });
+  this.set('row', row);
+  this.set('numOptionButtons', 1);
+  this.set('mockAction', () => {
+    Ember.run(() => {
+      Ember.set(row, 'checked', true);
+    });
   });
 
-  this.on('mockToggleCheckedProperty', function() {});
-  this.set('model', model);
-  this.render(hbs`{{ember-dynamic-table-tr model=model onCheckedChange=(action "mockToggleCheckedProperty")}}`);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons 
+              onCheckedChange=(action mockAction)}}`);
+  const $checkbox = this.$('.checkbox-td input[type="checkbox"]');
+  $checkbox.click();
+  assert.ok($checkbox.is(':checked'), 'checkbox is checked');
+  assert.ok(this.$('tr').eq(0).hasClass('highlighted'), "tr contains the 'highlighted' class");
+});
+
+test('if the numOptionButtons array length is = 0, the checkbox td is not displayed', function(assert) {
+  assert.expect(1);
+  const row = Ember.Object.create({ id: 0, name: 'foobar' });
+  this.set('row', row);
+  this.set('numOptionButtons', 0);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons}}`);
+  assert.equal(this.$('.checkbox-td').length, 0, 'checkbox td is not rendered');
+});
+
+test('if the numOptionButtons array length is > 0, the checkbox td is displayed', function(assert) {
+  assert.expect(1);
+  const row = Ember.Object.create({ id: 0, name: 'foobar' });
+  this.set('row', row);
+  this.set('numOptionButtons', 1);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons}}`);
+  assert.equal(this.$('.checkbox-td').length, 1, 'checkbox td is not rendered');
+});
+
+test('if the row does not contain an isBold property, the row is not displayed in bold', function(assert) {
+  assert.expect(1);
+  const row = Ember.Object.create({ id: 0, name: 'foobar' });
+  this.set('row', row);
+  this.set('numOptionButtons', 1);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons}}`);
   assert.notOk(this.$('tr').css('font-weight') === '700');
 });
 
-test('if the model contains an isBold property that is set to true, the row is displayed in bold', function(assert) {
+test('if the row contains an isBold property that is set to true, the row is displayed in bold', function(assert) {
   assert.expect(1);
-
-  var model = Ember.Object.create({ 
-    id:0, 
-    name:'FixOrg0',
-    isBold: true
-  });
-
-  this.on('mockToggleCheckedProperty', function() {});
-  this.set('model', model);
-  this.render(hbs`{{ember-dynamic-table-tr model=model onCheckedChange=(action "mockToggleCheckedProperty")}}`);
+  var row = Ember.Object.create({ id:0, name:'FixOrg0', isBold: true });
+  this.set('row', row);
+  this.set('numOptionButtons', 1);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons}}`);
   assert.ok(this.$('tr').css('font-weight') === 'bold');
+});
+
+test('cursor style is pointer', function(assert) {
+  assert.expect(1);
+  var row = Ember.Object.create({ id:0, name:'FixOrg0', isBold: true });
+  this.set('row', row);
+  this.set('numOptionButtons', 1);
+  this.render(hbs`{{ember-dynamic-table-tr row=row numOptionButtons=numOptionButtons}}`);
+  assert.ok(this.$('tr').css('cursor') === 'pointer', 'element contains the \'cursor: pointer\' style');
 });
