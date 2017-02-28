@@ -23,7 +23,7 @@
       {{#ember-dynamic-table-tr row=row numOptionButtons=optionButtons.length 
         onCheckedChange=(action "toggleCheckedProperty") }}
         {{#each availableColumns as |column|}}
-          <td {{action this.attrs.onRowClick row.id}}>{{get row column.property}}</td>
+          <td {{action this.attrs.onRowClick row}}>{{get row column.property}}</td>
         {{/each}}
       {{/ember-dynamic-table-tr}}
     {{/each}}

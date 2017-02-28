@@ -72,8 +72,8 @@ export default Ember.Controller.extend({
   ],
 
   actions: {
-    goToOrganisation(id) {
-      this.transitionToRoute('organisations.show', id);
+    goToOrganisation(model) {
+      this.transitionToRoute('organisations.show', model.get('id'));
       return false;
     },
     optionButtonClicked(option, checkedItems) {
