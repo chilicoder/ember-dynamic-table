@@ -18,8 +18,8 @@ export default Ember.Controller.extend({
     {
       'title': 'User', 
       'property': 'user.username', 
-      'filterable': true, 
-      'sortable': false
+      'filterable': false, 
+      'sortable': true
     },
     {
       'title': 'Tags', 
