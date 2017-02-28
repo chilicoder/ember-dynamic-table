@@ -35,6 +35,7 @@ export default Ember.Component.extend({
     let proxiedModel = this.get('proxiedModel');
     let filterText = this.get('filterText');
     let properties = this.get('filterableProperties');
+    console.log(properties);
     return filterByQuery(proxiedModel, properties, filterText, { conjunction: 'and' });
   }),
 
