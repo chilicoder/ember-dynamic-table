@@ -1,4 +1,6 @@
 {{title}}
-{{#if hideArrow "hidden"}}
-  <i class='th-arrow {{arrow}} {{if isHover "is-hover"}}'></i>
+{{#if showArrow}}
+  <i class='th-arrow icon-fixed-width {{arrow}} {{if isHover "is-hover"}}'></i>
+{{else}}
+  <i class='icon-fixed-width'>&nbsp;</i>
 {{/if}}

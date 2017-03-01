@@ -5,16 +5,21 @@ export default Ember.Component.extend({
   layout,
   tagName: 'th',
   attributeBindings: ['style'],
-  style: 'cursor: pointer',
   isHover: false,
   sortProperty: ['Must provide sortProperty.'],
   property: 'Must provide Property',
   title: 'Must provide Title',
 
+  style: Ember.computed('sortable', function() {
+    if (this.get('sortable')) {
+      return 'cursor:pointer';
+    }
+  }),
+
   mouseEnter: function() { this.set('isHover', true); },
   mouseLeave: function() { this.set('isHover', false); },
 
-  hideArrow: Ember.computed('sortProperty', 'property', 'isHover', 'sortable', function() {
+  showArrow: Ember.computed('sortProperty', 'property', 'isHover', 'sortable', function() {
     if (this.get('sortable')) {
       let isHover = this.get('isHover');
       let componentProperty = this.get('property');
